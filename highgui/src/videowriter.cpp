@@ -127,6 +127,9 @@ void VideoWriter::write(const Mat& image)
         return;
 
 #if defined __linux__ && !__ANDROID__
+    if(!d->wt_http.is_client_connected())
+        return;
+
     if (writer_http::supported())
     {
         // encode jpg

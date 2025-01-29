@@ -24,6 +24,7 @@ class writer_http
 {
 public:
     static bool supported();
+    bool is_client_connected();
 
     writer_http();
     ~writer_http();

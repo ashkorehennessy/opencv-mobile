@@ -156,6 +156,7 @@ public:
     const unsigned char* jpg_data;
     int jpg_size;
     int exit_flag;
+    bool client_connected;
 };
 
 static void* server_loop(void* args)
@@ -174,6 +175,7 @@ writer_http_impl::writer_http_impl()
     jpg_data = 0;
     jpg_size = 0;
     exit_flag = 0;
+    client_connected = false;
 }
 
 writer_http_impl::~writer_http_impl()
@@ -306,6 +308,7 @@ void writer_http_impl::mainloop()
         int cport = ntohs(addr.sin_port);
 
         fprintf(stderr, "client accepted %s %d\n", cip, cport);
+        client_connected = true;
 
         writer_http_client client(cfd);
 
@@ -389,6 +392,7 @@ void writer_http_impl::mainloop()
         }
 
         fprintf(stderr, "client closed %s %d\n", cip, cport);
+        client_connected = false;
     }
 
 OUT:
@@ -444,6 +448,11 @@ void writer_http_impl::close()
 bool writer_http::supported()
 {
     return true;
+}
+
+bool writer_http::is_client_connected()
+{
+    return d->client_connected;
 }
 
 writer_http::writer_http() : d(new writer_http_impl)
