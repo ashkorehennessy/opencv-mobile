@@ -39,6 +39,7 @@ public:
 
 #if defined __linux__ && !__ANDROID__
     writer_http wt_http;
+    std::vector<uchar> buf;
 #endif
 };
 
@@ -133,10 +134,10 @@ void VideoWriter::write(const Mat& image)
     if (writer_http::supported())
     {
         // encode jpg
-        std::vector<uchar> buf;
-        cv::imencode(".JPG", image, buf);
+        d->buf.clear();
+        cv::imencode(".JPG", image, d->buf);
 
-        d->wt_http.write_jpgbuf((const unsigned char*)buf.data(), buf.size());
+        d->wt_http.write_jpgbuf((const unsigned char*)d->buf.data(), d->buf.size());
     }
     else
 #endif
